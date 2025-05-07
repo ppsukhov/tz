@@ -1,0 +1,23 @@
+services:
+  db:
+    image: bitnami/postgresql:17.4.0
+    environment:
+      - POSTGRESQL_DATABASE=tz_db
+      - POSTGRESQL_USERNAME=tz_user
+      - POSTGRESQL_PASSWORD=tz_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    environment:
+     - DB_DSN=postgresql+asyncpg://tz_user:tz_password@db:5432/tz_db
+    ports:
+     - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
